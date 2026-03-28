@@ -416,6 +416,97 @@
     color: var(--muted);
   }
 
+  /* ── Contingency Section ── */
+  .contingency-section {
+    margin-top: 8px;
+    margin-bottom: 32px;
+  }
+  .contingency-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--danger);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .contingency-card {
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+    overflow: hidden;
+    border-left: 4px solid var(--danger);
+  }
+  .contingency-card.warn { border-left-color: var(--warning); }
+  .contingency-card.info { border-left-color: var(--accent); }
+  .cont-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .cont-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .cont-title-area { flex: 1; }
+  .cont-title { font-size: 14px; font-weight: 700; }
+  .cont-subtitle { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .cont-toggle {
+    font-size: 16px;
+    color: var(--muted);
+    transition: transform 0.3s;
+  }
+  .contingency-card.open .cont-toggle { transform: rotate(180deg); }
+  .cont-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .contingency-card.open .cont-body { max-height: 800px; }
+  .cont-inner {
+    padding: 0 18px 18px;
+    border-top: 1px solid var(--border);
+  }
+  .cont-inner p {
+    font-size: 13px;
+    line-height: 1.8;
+    margin-top: 12px;
+  }
+  .cont-inner .action-box {
+    background: #fff3cd;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .cont-inner .action-box.green {
+    background: #d4edda;
+  }
+  .cont-inner .action-box.blue {
+    background: #e8f4fd;
+  }
+  .phone-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+  .phone-link:hover { opacity: 0.9; }
+
   /* ── Responsive ── */
   @media (max-width: 480px) {
     .hero { padding: 36px 16px 32px; }
@@ -714,6 +805,196 @@
     </div>
   </div>
 
+  <!-- ══ もしもの場合 ══ -->
+  <div class="contingency-section">
+    <div class="contingency-header">🚨 もしもの場合の対処法</div>
+
+    <!-- Case 1: バスが来ない -->
+    <div class="contingency-card warn" onclick="toggleCont(this)">
+      <div class="cont-header">
+        <div class="cont-icon">🚌</div>
+        <div class="cont-title-area">
+          <div class="cont-title">W Line バスが来ない・乗れない</div>
+          <div class="cont-subtitle">運休・満員・大荷物で乗れない場合</div>
+        </div>
+        <div class="cont-toggle">▼</div>
+      </div>
+      <div class="cont-body">
+        <div class="cont-inner">
+          <p><strong>即座にプランBへ切替：</strong></p>
+          <div class="action-box">
+            <strong>① Uber / Lyft を呼ぶ</strong>（最も確実）<br>
+            ・ホテル前またはバス停からすぐ配車可能<br>
+            ・所要 15〜25分 / $20〜$35<br>
+            ・9:30 までに呼べば 10:00 に間に合う<br><br>
+            <strong>② タクシーを拾う</strong><br>
+            ・Ala Moana Blvd 沿いで手を挙げればOK<br>
+            ・$35〜$50 + チップ15〜20%
+          </div>
+          <p>💡 <strong>ポイント：</strong>9:15 を過ぎてもバスが来なければ、迷わず Uber に切り替えましょう。10分あれば手配→乗車できます。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Case 2: 遅刻しそう -->
+    <div class="contingency-card" onclick="toggleCont(this)">
+      <div class="cont-header">
+        <div class="cont-icon">⏰</div>
+        <div class="cont-title-area">
+          <div class="cont-title">10時に間に合わない・遅刻しそう</div>
+          <div class="cont-subtitle">予約キャンセル扱いを防ぐ方法</div>
+        </div>
+        <div class="cont-toggle">▼</div>
+      </div>
+      <div class="cont-body">
+        <div class="cont-inner">
+          <div class="action-box">
+            <strong>最優先：レンタカー会社に電話する</strong><br><br>
+            遅れると分かった時点ですぐに連絡。これが最も重要です。<br>
+            連絡さえすれば、ほとんどの会社が予約を保持してくれます。
+          </div>
+          <p>
+            <strong>知っておくべきルール：</strong><br>
+            ・多くの会社は <strong>30分〜2時間</strong> の猶予あり<br>
+            ・<strong>無連絡で1〜2時間超過</strong> → ノーショー（予約キャンセル）扱い<br>
+            ・ノーショー → 車が他の客に回される可能性あり<br>
+            ・再予約は高い料金になることも
+          </p>
+          <div class="action-box green">
+            ✅ <strong>対処手順：</strong><br>
+            ① 遅れそう → すぐ電話（到着予定時刻を伝える）<br>
+            ② 電話が繋がらない → バウチャーに記載の緊急連絡先へ<br>
+            ③ 30分以上遅れる場合 → 電話中に「Hold the reservation」と伝える
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Case 3: 免許証トラブル -->
+    <div class="contingency-card warn" onclick="toggleCont(this)">
+      <div class="cont-header">
+        <div class="cont-icon">🪪</div>
+        <div class="cont-title-area">
+          <div class="cont-title">国際免許がなくて断られた</div>
+          <div class="cont-subtitle">日本の免許証だけでは受付拒否された場合</div>
+        </div>
+        <div class="cont-toggle">▼</div>
+      </div>
+      <div class="cont-body">
+        <div class="cont-inner">
+          <div class="action-box">
+            <strong>① まず主張する</strong><br>
+            「ハワイ州法では日本の免許＋パスポートで入国1年以内は運転可能」と説明<br>
+            ・根拠：Hawaii Revised Statutes §286-102(b)<br><br>
+            <strong>② マネージャーを呼ぶ</strong><br>
+            カウンター担当者が拒否しても、マネージャーが対応を変えてくれるケースが多い
+          </div>
+          <div class="action-box blue">
+            <strong>それでもダメな場合：</strong><br><br>
+            <strong>③ CONRAC内の別の会社で借りる</strong><br>
+            ・10社が同じビルに入っている<br>
+            ・国際免許不要の会社もある<br>
+            ・当日予約OK（空きがあれば）<br><br>
+            <strong>④ 翻訳フォームを利用</strong><br>
+            ・一部の会社（Hertz, Avis等）は独自の「免許証翻訳フォーム」を提供<br>
+            ・カウンターでその場で作成してもらえる場合あり
+          </div>
+          <p>💡 <strong>使えるフレーズ：</strong><br>
+          "I have a valid Japanese driver's license and my passport with entry stamp. Under Hawaii state law, I can drive for up to one year after entry."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Case 4: クレカトラブル -->
+    <div class="contingency-card info" onclick="toggleCont(this)">
+      <div class="cont-header">
+        <div class="cont-icon">💳</div>
+        <div class="cont-title-area">
+          <div class="cont-title">クレジットカードが通らない</div>
+          <div class="cont-subtitle">決済拒否・限度額不足の場合</div>
+        </div>
+        <div class="cont-toggle">▼</div>
+      </div>
+      <div class="cont-body">
+        <div class="cont-inner">
+          <div class="action-box">
+            <strong>よくある原因と対処：</strong><br><br>
+            <strong>① 海外利用がブロックされている</strong><br>
+            → カード会社に電話して解除してもらう<br>
+            → 出発前にアプリで海外利用設定をONにしておく<br><br>
+            <strong>② デポジットで限度額を超えた</strong><br>
+            → レンタカーは $200〜$500 のデポジットが一時的にホールドされる<br>
+            → 別のクレジットカードを試す<br><br>
+            <strong>③ デビットカードでは借りられない会社もある</strong><br>
+            → クレジットカード（VISA/Master/AMEX）を持参
+          </div>
+          <p>💡 <strong>事前対策：</strong>出発前にカード会社のアプリで「海外利用」をONにしておきましょう。VISAとMasterの2枚持ちが安心です。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Case 5: 完全に行けない -->
+    <div class="contingency-card" onclick="toggleCont(this)">
+      <div class="cont-header">
+        <div class="cont-icon">🚫</div>
+        <div class="cont-title-area">
+          <div class="cont-title">体調不良等で完全に行けない</div>
+          <div class="cont-subtitle">キャンセル・日程変更の方法</div>
+        </div>
+        <div class="cont-toggle">▼</div>
+      </div>
+      <div class="cont-body">
+        <div class="cont-inner">
+          <div class="action-box">
+            <strong>① 日程変更（リスケ）を依頼</strong><br>
+            ・レンタカー会社に電話して翌日以降への変更を依頼<br>
+            ・同じバウチャーで変更できる場合が多い<br>
+            ・料金が変わる可能性あり<br><br>
+            <strong>② キャンセル</strong><br>
+            ・バウチャーの予約サイト（RentalCars.com, Expedia等）からオンラインキャンセル<br>
+            ・当日キャンセルでも無料の場合が多い（ポリシーはバウチャーを確認）<br>
+            ・「Free cancellation」の記載があればOK
+          </div>
+          <div class="action-box green">
+            ✅ <strong>ハワイ滞在中の代替移動手段：</strong><br>
+            ・Uber / Lyft（島内どこでも利用可能）<br>
+            ・TheBus（$3/回、島内全域カバー）<br>
+            ・Biki（シェアサイクル、ワイキキ〜アラモアナ付近）<br>
+            ・ワイキキトロリー（観光地巡回）
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emergency Phrase Card -->
+    <div class="contingency-card info" onclick="toggleCont(this)">
+      <div class="cont-header">
+        <div class="cont-icon">🗣️</div>
+        <div class="cont-title-area">
+          <div class="cont-title">緊急時に使える英語フレーズ</div>
+          <div class="cont-subtitle">電話・カウンターで使えるフレーズ集</div>
+        </div>
+        <div class="cont-toggle">▼</div>
+      </div>
+      <div class="cont-body">
+        <div class="cont-inner">
+          <div class="action-box blue">
+            <strong>📞 遅刻の電話：</strong><br>
+            "Hi, I have a reservation under [名前]. My confirmation number is D013454729. I'm running about [X] minutes late. Could you please hold my reservation?"<br><br>
+            <strong>🪪 免許証について：</strong><br>
+            "I have a valid Japanese driver's license and my passport. Under Hawaii state law, foreign licenses are valid for one year after entry."<br><br>
+            <strong>💳 カードの問題：</strong><br>
+            "Can I try a different credit card?" / "Could you try running it again?"<br><br>
+            <strong>📅 日程変更：</strong><br>
+            "I'd like to change my pickup date to tomorrow. Is that possible with the same reservation?"<br><br>
+            <strong>❌ キャンセル：</strong><br>
+            "I need to cancel my reservation. My confirmation number is D013454729."
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Footer ── -->
   <div class="footer">
     Have a great drive! 🌴<br>
@@ -724,6 +1005,10 @@
 
 <script>
 function toggleStep(card) {
+  card.classList.toggle('open');
+}
+
+function toggleCont(card) {
   card.classList.toggle('open');
 }
 
