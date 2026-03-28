@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>レンタカー受取りガイド | 2026.3.28</title>
+<style>
+  :root {
+    --primary: #0f4c75;
+    --accent: #3282b8;
+    --highlight: #bbe1fa;
+    --bg: #f7f9fc;
+    --card: #ffffff;
+    --text: #1b262c;
+    --muted: #6b7b8d;
+    --success: #27ae60;
+    --warning: #e67e22;
+    --danger: #e74c3c;
+    --border: #e0e6ed;
+    --shadow: 0 2px 16px rgba(15,76,117,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding-bottom: 100px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, #0f4c75 0%, #3282b8 50%, #1a8ccc 100%);
+    color: #fff;
+    padding: 48px 24px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 32px;
+    background: var(--bg);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  }
+  .hero-icon { font-size: 48px; margin-bottom: 12px; }
+  .hero h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+  .hero .subtitle {
+    font-size: 14px;
+    opacity: 0.85;
+    margin-top: 8px;
+  }
+  .hero .date-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(4px);
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-top: 16px;
+    font-weight: 600;
+  }
+
+  /* ── Container ── */
+  .container { max-width: 480px; margin: 0 auto; padding: 0 16px; }
+
+  /* ── Route Summary ── */
+  .route-summary {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    margin: -16px 16px 24px;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .route-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+  }
+  .route-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .route-dot.start { background: var(--success); }
+  .route-dot.end { background: var(--danger); }
+  .route-line {
+    width: 2px;
+    height: 24px;
+    background: var(--border);
+    margin-left: 5px;
+  }
+  .route-label { font-weight: 600; }
+  .route-sub { color: var(--muted); font-size: 12px; }
+  .route-meta {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .route-meta-item {
+    flex: 1;
+    text-align: center;
+  }
+  .route-meta-item .val {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .route-meta-item .lbl {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ── License Alert ── */
+  .license-alert {
+    background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
+    border: 1px solid #f0d060;
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+  }
+  .license-alert h3 {
+    font-size: 15px;
+    color: #856404;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .license-alert p {
+    font-size: 13px;
+    color: #664d03;
+    line-height: 1.8;
+  }
+  .license-alert .verdict {
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13px;
+    border-left: 4px solid var(--warning);
+  }
+  .license-alert .verdict strong {
+    color: var(--warning);
+  }
+
+  /* ── Timeline ── */
+  .timeline { margin-bottom: 32px; }
+  .timeline-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 16px;
+  }
+  .tl-item {
+    display: flex;
+    gap: 14px;
+    position: relative;
+  }
+  .tl-item:not(:last-child) { padding-bottom: 8px; }
+  .tl-time {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary);
+    min-width: 50px;
+    text-align: right;
+    padding-top: 2px;
+  }
+  .tl-dot-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .tl-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+  .tl-line {
+    width: 2px;
+    flex: 1;
+    background: var(--border);
+    min-height: 20px;
+  }
+  .tl-content {
+    flex: 1;
+    padding-bottom: 16px;
+  }
+  .tl-content .title { font-size: 14px; font-weight: 600; }
+  .tl-content .desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* ── Steps ── */
+  .step-card {
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .step-card:hover { box-shadow: 0 4px 24px rgba(15,76,117,0.12); }
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+    user-select: none;
+    cursor: pointer;
+  }
+  .step-num {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-title-area { flex: 1; }
+  .step-title { font-size: 15px; font-weight: 700; }
+  .step-subtitle { font-size: 12px; color: var(--muted); }
+  .step-toggle {
+    font-size: 18px;
+    color: var(--muted);
+    transition: transform 0.3s;
+  }
+  .step-card.open .step-toggle { transform: rotate(180deg); }
+  .step-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .step-card.open .step-body { max-height: 1200px; }
+  .step-inner {
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .step-inner ul {
+    list-style: none;
+    margin-top: 14px;
+  }
+  .step-inner ul li {
+    font-size: 13px;
+    padding: 6px 0;
+    padding-left: 22px;
+    position: relative;
+    line-height: 1.8;
+  }
+  .step-inner ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 13px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* ── Checklist ── */
+  .checklist { margin-top: 14px; }
+  .checklist label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: 10px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+    line-height: 1.6;
+  }
+  .checklist label:hover { background: #eef3f8; }
+  .checklist input[type="checkbox"] {
+    width: 18px; height: 18px;
+    margin-top: 2px;
+    accent-color: var(--success);
+    flex-shrink: 0;
+  }
+  .checklist .checked-text { text-decoration: line-through; color: var(--muted); }
+
+  /* ── Transport Compare ── */
+  .transport-tabs {
+    display: flex;
+    gap: 6px;
+    margin: 16px 0 12px;
+  }
+  .transport-tab {
+    flex: 1;
+    padding: 10px 8px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s;
+    background: #fff;
+  }
+  .transport-tab.active {
+    border-color: var(--accent);
+    background: var(--highlight);
+    color: var(--primary);
+  }
+  .transport-tab .price {
+    font-size: 18px;
+    font-weight: 700;
+    display: block;
+    margin-top: 4px;
+  }
+  .transport-tab .tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+  .tag-cheapest { background: #d4edda; color: #155724; }
+  .tag-fast { background: #d1ecf1; color: #0c5460; }
+  .transport-detail {
+    display: none;
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 13px;
+    line-height: 1.9;
+  }
+  .transport-detail.active { display: block; }
+  .transport-detail ol {
+    padding-left: 20px;
+    margin-top: 8px;
+  }
+  .transport-detail ol li {
+    margin-bottom: 4px;
+  }
+
+  /* ── Info Box ── */
+  .info-box {
+    background: #e8f4fd;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--primary);
+    margin-top: 14px;
+    border-left: 4px solid var(--accent);
+  }
+
+  /* ── Photo Reminder ── */
+  .photo-reminder {
+    background: linear-gradient(135deg, #ffeef0, #ffe0e3);
+    border: 1px solid #f5c6cb;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #721c24;
+    margin-top: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .photo-reminder .icon { font-size: 20px; flex-shrink: 0; }
+
+  /* ── Booking Info ── */
+  .booking-card {
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .booking-card h3 {
+    font-size: 14px;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+  .booking-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+  .booking-row:last-child { border: none; }
+  .booking-row .label { color: var(--muted); }
+  .booking-row .value { font-weight: 600; }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 32px 16px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 480px) {
+    .hero { padding: 36px 16px 32px; }
+    .hero h1 { font-size: 19px; }
+    .route-summary { margin-left: 16px; margin-right: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="hero-icon">🚗</div>
+  <h1>レンタカー受取りガイド</h1>
+  <div class="subtitle">Prince Waikiki → HNL Airport CONRAC</div>
+  <div class="date-badge">📅 2026年3月28日（土）10:00 AM</div>
+</div>
+
+<!-- ── Route Summary ── -->
+<div class="route-summary">
+  <div class="route-row">
+    <div class="route-dot start"></div>
+    <div>
+      <div class="route-label">Prince Waikiki</div>
+      <div class="route-sub">100 Holomoana St, Honolulu</div>
+    </div>
+  </div>
+  <div class="route-line"></div>
+  <div class="route-row">
+    <div class="route-dot end"></div>
+    <div>
+      <div class="route-label">CONRAC レンタカー施設</div>
+      <div class="route-sub">300 Rodgers Blvd, Honolulu（HNL空港）</div>
+    </div>
+  </div>
+  <div class="route-meta">
+    <div class="route-meta-item">
+      <div class="val">$3</div>
+      <div class="lbl">最安料金（バス）</div>
+    </div>
+    <div class="route-meta-item">
+      <div class="val">~40分</div>
+      <div class="lbl">所要時間</div>
+    </div>
+    <div class="route-meta-item">
+      <div class="val">~9km</div>
+      <div class="lbl">距離</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ── Booking Info ── -->
+  <div class="booking-card">
+    <h3>📋 予約情報</h3>
+    <div class="booking-row">
+      <span class="label">バウチャー番号</span>
+      <span class="value">D013454729</span>
+    </div>
+    <div class="booking-row">
+      <span class="label">受取日時</span>
+      <span class="value">2026/3/28 10:00 AM</span>
+    </div>
+    <div class="booking-row">
+      <span class="label">受取場所</span>
+      <span class="value">300 Rodgers Blvd, HNL</span>
+    </div>
+  </div>
+
+  <!-- ── License Alert ── -->
+  <div class="license-alert">
+    <h3>⚠️ 国際免許証について</h3>
+    <p>
+      ハワイ州の法律上、<strong>日本の免許証＋パスポートで運転可能</strong>です（入国から1年以内）。
+      しかし実際には注意点があります：
+    </p>
+    <div class="verdict">
+      <strong>結論：国際免許がなくても法的にはOK。ただし持っていた方が安心。</strong><br><br>
+      <strong>法律上：</strong>日本の免許証＋パスポート（入国スタンプ確認可能）で運転可能<br><br>
+      <strong>レンタカー会社：</strong>一部の会社は非ローマ字の免許証に対して国際免許証（IDP）を求める場合あり。予約済みの会社に事前確認推奨<br><br>
+      <strong>事故・違反時：</strong>警察官が日本語の免許証を読めず、トラブルになるケースも報告あり。国際免許があればスムーズ<br><br>
+      <strong>※</strong> 国際免許は日本国内でしか取得できません（各都道府県の免許センター / ¥2,350）
+    </div>
+  </div>
+
+  <!-- ── Timeline ── -->
+  <div class="timeline">
+    <div class="timeline-header">⏱ タイムライン</div>
+    <div class="tl-item">
+      <div class="tl-time">8:30</div>
+      <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="title">出発準備</div>
+        <div class="desc">持ち物チェック・書類確認</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">8:45</div>
+      <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="title">ホテル出発</div>
+        <div class="desc">Ala Moana Blvd 方面へ徒歩5分</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">8:50</div>
+      <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="title">W Line 乗車</div>
+        <div class="desc">Airport行き / 10分間隔で運行</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">9:35</div>
+      <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="title">空港ターミナル着</div>
+        <div class="desc">Terminal 2 方面へ</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">9:45</div>
+      <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="title">CONRAC到着</div>
+        <div class="desc">レンタカー施設でカウンターへ</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">10:00</div>
+      <div class="tl-dot-col"><div class="tl-dot"></div></div>
+      <div class="tl-content">
+        <div class="title">🎉 レンタカー受取り</div>
+        <div class="desc">手続き完了 → ドライブへ！</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 1 ── -->
+  <div class="step-card open">
+    <div class="step-header" onclick="toggleStep(this.parentElement)">
+      <div class="step-num">1</div>
+      <div class="step-title-area">
+        <div class="step-title">出発前の準備</div>
+        <div class="step-subtitle">ホテルにて持ち物確認</div>
+      </div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="step-inner">
+        <div class="checklist">
+          <label><input type="checkbox" onchange="toggleCheck(this)"><span>パスポート（原本・コピー不可）</span></label>
+          <label><input type="checkbox" onchange="toggleCheck(this)"><span>日本の運転免許証</span></label>
+          <label><input type="checkbox" onchange="toggleCheck(this)"><span>国際運転免許証（持っている場合）</span></label>
+          <label><input type="checkbox" onchange="toggleCheck(this)"><span>レンタルバウチャー D013454729（スマホ or 印刷）</span></label>
+          <label><input type="checkbox" onchange="toggleCheck(this)"><span>クレジットカード（契約者本人名義）</span></label>
+          <label><input type="checkbox" onchange="toggleCheck(this)"><span>現金 $3.00 ピッタリ（バス用・お釣りなし）</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 2 ── -->
+  <div class="step-card">
+    <div class="step-header" onclick="toggleStep(this.parentElement)">
+      <div class="step-num">2</div>
+      <div class="step-title-area">
+        <div class="step-title">ホテル → バス停</div>
+        <div class="step-subtitle">徒歩5分</div>
+      </div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="step-inner">
+        <ul>
+          <li>Prince Waikiki を出て <strong>Ala Moana Blvd</strong> 方面（海と反対側）へ歩く</li>
+          <li><strong>Ala Moana Blvd 沿い</strong>のバス停で <strong>W Line（Airport 行き）</strong>を待つ</li>
+          <li>W Line は<strong>10分間隔</strong>で運行 — すぐ来ます</li>
+        </ul>
+        <div class="info-box">
+          💡 Google Maps で「TheBus W Line」を検索するとリアルタイムのバス位置が確認できます
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 3 ── -->
+  <div class="step-card">
+    <div class="step-header" onclick="toggleStep(this.parentElement)">
+      <div class="step-num">3</div>
+      <div class="step-title-area">
+        <div class="step-title">バスで空港へ</div>
+        <div class="step-subtitle">W Line / 約35〜50分</div>
+      </div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="step-inner">
+        <div class="transport-tabs">
+          <div class="transport-tab active" onclick="switchTransport('bus')">
+            🚌 W Line バス
+            <span class="price">$3</span>
+            <span class="tag tag-cheapest">最安</span>
+          </div>
+          <div class="transport-tab" onclick="switchTransport('uber')">
+            🚕 Uber / Lyft
+            <span class="price">$20〜35</span>
+            <span class="tag tag-fast">最速</span>
+          </div>
+        </div>
+
+        <div id="detail-bus" class="transport-detail active">
+          <ol>
+            <li>乗車時に <strong>$3.00 現金</strong>（お釣り出ない）または <strong>HOLO カード</strong>をタップ</li>
+            <li>行き先が「<strong>Airport</strong>」方向であることを確認</li>
+            <li>空港ターミナル付近で下車</li>
+          </ol>
+          <div class="info-box">
+            🎫 HOLO カードなら乗り換え2.5時間無料 / 1日上限 $7.50<br>
+            ⚠️ 大きなスーツケースは持ち込み不可（膝上サイズまで）
+          </div>
+        </div>
+
+        <div id="detail-uber" class="transport-detail">
+          <ol>
+            <li>ホテル正面で <strong>9:15〜9:25</strong> に配車</li>
+            <li>所要時間 <strong>15〜25分</strong></li>
+            <li>アプリの「Schedule」機能で前日に予約しておくと安心</li>
+          </ol>
+          <div class="info-box">
+            💡 UberとLyft両方の料金を比較してから予約するのがお得。朝のラッシュ時はサージ（割増）に注意
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 4 ── -->
+  <div class="step-card">
+    <div class="step-header" onclick="toggleStep(this.parentElement)">
+      <div class="step-num">4</div>
+      <div class="step-title-area">
+        <div class="step-title">空港 → CONRAC</div>
+        <div class="step-subtitle">レンタカー施設へ移動</div>
+      </div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="step-inner">
+        <ul>
+          <li>空港ターミナルで下車</li>
+          <li><strong>Terminal 2</strong> の <strong>Baggage Claim 26 または 31</strong> の出口へ向かう</li>
+          <li>出口を出ると<strong>目の前</strong>に5階建ての <strong>CONRAC</strong>（統合レンタカービル）</li>
+          <li>横断歩道を渡って CONRAC へ入る</li>
+        </ul>
+        <div class="info-box">
+          🏢 CONRAC = Consolidated Rent-A-Car facility<br>
+          10社のレンタカー会社が1つのビルに集約されています
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 5 ── -->
+  <div class="step-card">
+    <div class="step-header" onclick="toggleStep(this.parentElement)">
+      <div class="step-num">5</div>
+      <div class="step-title-area">
+        <div class="step-title">レンタカー受取り</div>
+        <div class="step-subtitle">カウンターで手続き</div>
+      </div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="step-inner">
+        <ul>
+          <li>CONRAC 内で予約した<strong>レンタカー会社のカウンター</strong>を探す</li>
+          <li>カウンターで提示するもの：
+            <br>・バウチャー（D013454729）
+            <br>・パスポート
+            <br>・運転免許証（国際免許 or 日本の免許）
+            <br>・クレジットカード
+          </li>
+          <li><strong>契約書にサイン</strong>（保険・追加オプションの確認）</li>
+          <li>車のキーを受け取り、指定スペースへ</li>
+        </ul>
+        <div class="photo-reminder">
+          <div class="icon">📸</div>
+          <div>
+            <strong>重要：出発前に車の傷・ダメージを全方向から写真撮影！</strong><br>
+            返却時の「身に覚えのない傷」トラブルを防止できます。タイムスタンプ付きで撮るのがベスト。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <div class="footer">
+    Have a great drive! 🌴<br>
+    Sources: airports.hawaii.gov | thebus.org | honolulu.gov
+  </div>
+
+</div>
+
+<script>
+function toggleStep(card) {
+  card.classList.toggle('open');
+}
+
+function toggleCheck(cb) {
+  const span = cb.nextElementSibling;
+  if (cb.checked) {
+    span.classList.add('checked-text');
+  } else {
+    span.classList.remove('checked-text');
+  }
+  // Save state
+  saveChecklist();
+}
+
+function switchTransport(type) {
+  document.querySelectorAll('.transport-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.transport-detail').forEach(d => d.classList.remove('active'));
+  if (type === 'bus') {
+    document.querySelectorAll('.transport-tab')[0].classList.add('active');
+    document.getElementById('detail-bus').classList.add('active');
+  } else {
+    document.querySelectorAll('.transport-tab')[1].classList.add('active');
+    document.getElementById('detail-uber').classList.add('active');
+  }
+}
+
+// Persist checklist state in localStorage
+function saveChecklist() {
+  const checks = [];
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
+    checks.push(cb.checked);
+  });
+  localStorage.setItem('rental-checklist', JSON.stringify(checks));
+}
+
+function loadChecklist() {
+  const saved = localStorage.getItem('rental-checklist');
+  if (saved) {
+    const checks = JSON.parse(saved);
+    document.querySelectorAll('.checklist input[type="checkbox"]').forEach((cb, i) => {
+      if (checks[i]) {
+        cb.checked = true;
+        cb.nextElementSibling.classList.add('checked-text');
+      }
+    });
+  }
+}
+
+loadChecklist();
+</script>
+
+</body>
+</html>
